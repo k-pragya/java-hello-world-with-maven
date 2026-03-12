@@ -1,22 +1,37 @@
-pipeline{
+pipeline {
     agent any
 
-    stages{
-        stage('checkout'){
-            steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github access', url: 'https://github.com/sreenivas449/java-hello-world-with-maven.git']]])
-            }
-        }
-        stage('build'){
-            steps{
-               bat 'mvn package'
-            }
-        }
-        stage('Test') {
+    stages {
+        stage('Checkout') {
             steps {
-                bat 'mvn test'
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/master']], 
+                    extensions: [], 
+                    userRemoteConfigs: [[
+                        credentialsId: 'github access', 
+                        url: 'https://github.com/k-pragya/java-hello-world-with-maven.git'
+                    ]]
+                ])
             }
         }
 
+        stage('Build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
     }
 }
